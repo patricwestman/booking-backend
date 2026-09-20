@@ -56,7 +56,7 @@ jobs:
 
   docker: 
     needs: build 
-    if: github.event_name == 'push' && github.ref =='refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -77,6 +77,15 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/booking-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/booking-backend:${{ github.sha }}
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Redeploy Railway service
+        env: 
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway redeploy --service booking-backend --yes
+
 
 
       
